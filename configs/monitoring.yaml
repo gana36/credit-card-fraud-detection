@@ -1,0 +1,3 @@
+reference_sample_path: data/processed/reference.parquet
+current_sample_path: data/processed/current.parquet
+report_output_dir: reports/

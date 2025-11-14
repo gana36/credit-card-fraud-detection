@@ -1,0 +1,58 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.app
+    image: credit-fraud-app:local
+    container_name: app
+    environment:
+      - APP_PORT=8000
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MODEL_NAME=credit-fraud
+      - MODEL_ALIAS=production
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../models:/app/models
+      - ../mlruns:/mlruns
+    depends_on:
+      - mlflow
+    command: ["uvicorn", "src.app.api:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  mlflow:
+    image: python:3.11-slim
+    container_name: mlflow
+    working_dir: /app
+    volumes:
+      - ../mlruns:/mlruns
+      # Bind a directory for SQLite DB (host: ../mlflow -> container: /mlflow)
+      - ../mlflow:/mlflow
+    ports:
+      - "5000:5000"
+    # Install only mlflow in this container, then start the server.
+    command: ["bash", "-lc", "pip install --no-cache-dir mlflow==2.16.2 && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root /mlruns"]
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    depends_on:
+      - prometheus
+networks:
+  default:
+    name: credit-fraud-local

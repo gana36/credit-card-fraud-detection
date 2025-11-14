@@ -1,0 +1,7 @@
+# DVC ignore
+**/.git/**
+**/__pycache__/**
+**/.ipynb_checkpoints/**
+mlruns/
+mlflow.db
+reports/

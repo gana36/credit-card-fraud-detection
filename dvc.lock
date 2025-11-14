@@ -1,0 +1,73 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m src.ml.data
+    deps:
+    - path: creditcard.csv
+      hash: md5
+      md5: e90efcb83d69faf99fcab8b0255024de
+      size: 150828752
+    - path: src/ml/data.py
+      hash: md5
+      md5: 8bf4b8dbbc5f588d626c2665dbe65def
+      size: 1204
+    outs:
+    - path: data/processed/current.parquet
+      hash: md5
+      md5: 48528dd0e68b2fc9c7879bedabd7d278
+      size: 1416958
+    - path: data/processed/reference.parquet
+      hash: md5
+      md5: 8f7f171450846f0bd27035c48f10d224
+      size: 2845918
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: 2cffb1d81a3f6645ced36a887a0c4b62
+      size: 16333156
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 96fdca8ff9d1130537e4ea365c4a65d8
+      size: 60528603
+  train:
+    cmd: python -m src.ml.train
+    deps:
+    - path: configs/base.yaml
+      hash: md5
+      md5: 24fd43e4d800c0245e6ac519f1e1b320
+      size: 44
+    - path: configs/training.yaml
+      hash: md5
+      md5: 0a9a53103d850928e7c4db44b1c327dd
+      size: 125
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: 2cffb1d81a3f6645ced36a887a0c4b62
+      size: 16333156
+    - path: data/processed/train.parquet
+      hash: md5
+      md5: 96fdca8ff9d1130537e4ea365c4a65d8
+      size: 60528603
+    - path: src/ml/train.py
+      hash: md5
+      md5: 526041b7bcfbc46d98997fd9ff36197c
+      size: 2222
+    outs:
+    - path: models/latest.joblib
+      hash: md5
+      md5: 318ca76d7b0ccc2d4f2a158df5991dcd
+      size: 2878
+  evaluate:
+    cmd: python -m src.ml.evaluate
+    deps:
+    - path: data/processed/test.parquet
+      hash: md5
+      md5: 2cffb1d81a3f6645ced36a887a0c4b62
+      size: 16333156
+    - path: models/latest.joblib
+      hash: md5
+      md5: 318ca76d7b0ccc2d4f2a158df5991dcd
+      size: 2878
+    - path: src/ml/evaluate.py
+      hash: md5
+      md5: f896b91e3d5c74793694bf449cf9e160
+      size: 630

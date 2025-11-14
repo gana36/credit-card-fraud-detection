@@ -1,0 +1,8 @@
+model:
+  type: logistic_regression
+  params:
+    C: 1.0
+    max_iter: 300
+    class_weight: balanced
+features:
+  scale: true

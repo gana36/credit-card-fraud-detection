@@ -1,0 +1,39 @@
+# Ignore VCS and metadata
+.git
+.gitignore
+.dvc/
+.dvcignore
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/
+
+# Environments/IDE
+.venv/
+venv/
+ENV/
+.vscode/
+.idea/
+
+# Data and artifacts (rebuilt or mounted at runtime)
+data/
+mlruns/
+mlflow.db
+models/
+reports/
+
+# Large local files
+creditcard.csv
+
+# Infra (not needed in build context)
+infra/
+
+# OS files
+.DS_Store
+Thumbs.db
