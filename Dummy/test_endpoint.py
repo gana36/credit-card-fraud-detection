@@ -19,5 +19,3 @@ for i in range(100):
     time.sleep(0.1)  # 10 req/s; adjust if you like
 
 
-# docker compose -f infra/docker-compose.yaml up -d mlflow app prometheus grafana
-# docker compose -f infra/docker-compose.yaml down

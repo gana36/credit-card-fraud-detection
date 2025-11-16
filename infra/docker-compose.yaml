@@ -1,4 +1,22 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=mlops
+      - POSTGRES_PASSWORD=mlops_password
+      - POSTGRES_DB=predictions
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mlops"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   app:
     build:
       context: ..
@@ -10,13 +28,17 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
       - MODEL_NAME=credit-fraud
       - MODEL_ALIAS=production
+      - DATABASE_URL=postgresql://mlops:mlops_password@postgres:5432/predictions
     ports:
       - "8000:8000"
     volumes:
       - ../models:/app/models
       - ../mlruns:/mlruns
     depends_on:
-      - mlflow
+      postgres:
+        condition: service_healthy
+      mlflow:
+        condition: service_started
     command: ["uvicorn", "src.app.api:app", "--host", "0.0.0.0", "--port", "8000"]
     restart: unless-stopped
   mlflow:
@@ -53,6 +75,10 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
     depends_on:
       - prometheus
+volumes:
+  postgres_data:
+    driver: local
+
 networks:
   default:
     name: credit-fraud-local

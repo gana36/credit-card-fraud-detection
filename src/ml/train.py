@@ -31,9 +31,10 @@ def train():
     train_df = pd.read_parquet(train_pq)
     test_df = pd.read_parquet(test_pq)
 
-    X_train = train_df.drop("Class", axis=1)
+    # Drop Time feature - not useful for prediction, only for record-keeping
+    X_train = train_df.drop(["Class", "Time"], axis=1, errors='ignore')
     y_train = train_df["Class"]
-    X_test = test_df.drop("Class", axis=1)
+    X_test = test_df.drop(["Class", "Time"], axis=1, errors='ignore')
     y_test = test_df["Class"]
 
     steps = []
@@ -66,6 +67,9 @@ def train():
         # Log model to MLflow with artifacts
         model_name = os.getenv("MODEL_NAME", "credit-fraud")
 
+        run_id = run.info.run_id
+        experiment_id = run.info.experiment_id
+
         # IMPORTANT: Log the sklearn model which handles artifacts automatically
         # This creates the model registry entry AND saves artifacts
         model_info = mlflow.sklearn.log_model(
@@ -74,28 +78,21 @@ def train():
             registered_model_name=model_name
         )
 
-        # Additionally save the joblib file as an artifact for backup
-        mlflow.log_artifact(model_path)
-
-        # CRITICAL FIX: Manually ensure artifacts exist in local mlruns folder
-        # When using HTTP tracking, artifacts aren't written locally, only to server
-        # But the server stores them in /mlruns which is mounted, so we force-write them
+        # WORKAROUND: When using HTTP tracking, artifacts aren't written to local mlruns
+        # We need to manually save them so the Docker containers can access them
         import shutil
-        experiment_id = run.info.experiment_id
-        run_id = run.info.run_id
+        import cloudpickle
 
-        # Construct the local mlruns path where artifacts SHOULD be
         artifacts_dest = os.path.join("mlruns", str(experiment_id), run_id, "artifacts", "model")
-
-        # Force create the directory and copy model artifacts
         os.makedirs(artifacts_dest, exist_ok=True)
 
-        # Copy the joblib file as model.pkl (MLflow sklearn format)
+        # Save the model using cloudpickle (MLflow's preferred format)
         model_pkl_path = os.path.join(artifacts_dest, "model.pkl")
-        shutil.copy(model_path, model_pkl_path)
-        print(f"✓ Copied model to: {model_pkl_path}")
+        with open(model_pkl_path, 'wb') as f:
+            cloudpickle.dump(pipe, f)
 
-        # Create the MLmodel metadata file
+        # Create MLmodel metadata file
+        import sklearn
         mlmodel_content = f"""artifact_path: model
 flavors:
   python_function:
@@ -110,19 +107,25 @@ flavors:
     code: null
     pickled_model: model.pkl
     serialization_format: cloudpickle
-    sklearn_version: 1.5.2
+    sklearn_version: {sklearn.__version__}
 mlflow_version: 2.16.2
-model_size_bytes: {os.path.getsize(model_path)}
+model_size_bytes: {os.path.getsize(model_pkl_path)}
 model_uuid: {run_id}
 run_id: {run_id}
-utc_time_created: '{run.info.start_time}'
+utc_time_created: '{int(run.info.start_time)}'
 """
         mlmodel_path = os.path.join(artifacts_dest, "MLmodel")
         with open(mlmodel_path, "w") as f:
             f.write(mlmodel_content)
-        print(f"✓ Created MLmodel file: {mlmodel_path}")
 
-        print({"run_id": run_id, "auc": float(auc), "model_path": model_path, "mlflow_model": model_info.model_uri, "artifacts_path": artifacts_dest})
+        print(f"\n✅ Training complete!")
+        print(f"Run ID: {run_id}")
+        print(f"AUC: {auc:.4f}")
+        print(f"Model Path: {model_path}")
+        print(f"MLflow Model URI: {model_info.model_uri}")
+        print(f"Artifacts saved to: {artifacts_dest}")
+        print(f"\nTo promote this model to production:")
+        print(f"  python scripts/promote_model.py --version <VERSION> --alias production --reload-app")
 
 
 if __name__ == "__main__":

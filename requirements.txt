@@ -12,6 +12,9 @@ dvc==3.56.0
 black==24.10.0
 ruff==0.7.1
 pytest==8.3.3
+pytest-cov==5.0.0
 nbconvert==7.16.4
 pyarrow==17.0.0
 joblib==1.4.2
+sqlalchemy==2.0.35
+requests==2.32.3
