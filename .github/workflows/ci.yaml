@@ -89,7 +89,7 @@ jobs:
 
       - name: Test Docker Compose
         run: |
-          docker-compose -f infra/docker-compose.yaml config
+          docker compose -f infra/docker-compose.yaml config
 
   notify:
     name: Notify Status
