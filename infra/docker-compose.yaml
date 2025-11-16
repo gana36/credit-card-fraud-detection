@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   app:
     build:
@@ -19,9 +18,11 @@ services:
     depends_on:
       - mlflow
     command: ["uvicorn", "src.app.api:app", "--host", "0.0.0.0", "--port", "8000"]
-
+    restart: unless-stopped
   mlflow:
-    image: python:3.11-slim
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.mlflow
     container_name: mlflow
     working_dir: /app
     volumes:
@@ -30,8 +31,7 @@ services:
       - ../mlflow:/mlflow
     ports:
       - "5000:5000"
-    # Install only mlflow in this container, then start the server.
-    command: ["bash", "-lc", "pip install --no-cache-dir mlflow==2.16.2 && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root /mlruns"]
+    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
