@@ -1,12 +1,14 @@
 import os
 import mlflow
 from mlflow.tracking import MlflowClient
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from starlette.responses import Response, JSONResponse
 from .metrics import REQUEST_COUNT, REQUEST_LATENCY
 import joblib
+import time
+from datetime import datetime
 
 app = FastAPI(title="Credit Fraud API")
 app.add_middleware(
@@ -36,6 +38,15 @@ _model_info = {
 
 # Configure MLflow tracking (works both in and out of containers)
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
+
+# Initialize database on startup
+try:
+    from src.database.models import init_db, get_db, Prediction
+    init_db()
+    DB_ENABLED = True
+except Exception as e:
+    print(f"Database not available: {e}")
+    DB_ENABLED = False
 
 def load_model():
     global _model
@@ -164,7 +175,9 @@ async def reload_model():
             status_code=500
         )
 @app.post("/predict")
-async def predict(payload: dict):
+async def predict(payload: dict, db=Depends(get_db) if DB_ENABLED else None):
+    start_time = time.time()
+
     with REQUEST_LATENCY.labels("/predict").time():
         model = load_model()
         if model is None:
@@ -176,8 +189,35 @@ async def predict(payload: dict):
             import pandas as pd
             X = pd.DataFrame([payload])
             proba = float(model.predict_proba(X)[:, 1][0])
+            prediction = 1 if proba >= 0.5 else 0
+
+            # Calculate latency
+            latency_ms = (time.time() - start_time) * 1000
+
+            # Store prediction in database
+            if DB_ENABLED and db is not None:
+                try:
+                    db_prediction = Prediction(
+                        timestamp=datetime.utcnow(),
+                        features=payload,
+                        fraud_probability=proba,
+                        prediction=prediction,
+                        model_version=_model_info.get("version"),
+                        model_name=_model_info.get("name"),
+                        latency_ms=latency_ms
+                    )
+                    db.add(db_prediction)
+                    db.commit()
+                except Exception as db_error:
+                    print(f"Failed to log prediction to database: {db_error}")
+                    db.rollback()
+
             REQUEST_COUNT.labels("POST", "/predict", 200).inc()
-            return {"fraud_probability": proba}
+            return {
+                "fraud_probability": proba,
+                "prediction": prediction,
+                "model_version": _model_info.get("version")
+            }
         except Exception as e:
             REQUEST_COUNT.labels("POST", "/predict", 400).inc()
             return JSONResponse({"error": str(e)}, status_code=400)

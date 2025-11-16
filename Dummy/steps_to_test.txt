@@ -1,0 +1,107 @@
+# docker compose -f infra/docker-compose.yaml up -d mlflow app prometheus grafana
+# docker compose -f infra/docker-compose.yaml down
+
+
+
+"""Invoke-RestMethod -Uri "http://localhost:8000/predict" -Method Post -ContentType "application/json" -Body '{"V1": -1.35, "V2": -0.07, "V3": 2.53, "V4": 1.38, "V5": -0.34, "V6": 0.46, "V7": 0.24, "V8": 0.10, "V9": 0.36, "V10": 0.09, "V11": -0.55, "V12": -0.62,"V13": -0.99, "V14": -0.31, "V15": 1.47, "V16": -0.47, "V17": 0.21, "V18": 0.03, "V19":0.40, "V20": 0.25, "V21": -0.02, "V22": 0.28, "V23": -0.11, "V24": 0.07, "V25": 0.13,"V26": -0.19, "V27": 0.13, "V28": -0.02, "Amount": 149.62}'
+
+
+docker exec -it postgres psql -U mlops -d predictions -c "SELECT COUNT(*) FROM predictions;"
+
+  # View recent predictions
+  docker exec -it postgres psql -U mlops -d predictions -c "SELECT timestamp, fraud_probability, prediction, model_version, latency_ms FROM predictions ORDER BY timestamp DESC LIMIT 5;"
+
+  2. Test Model Validation
+
+  # Validate a model version (replace 1 with your version number)
+  python scripts/validate_model.py --version 1
+
+  # Validate and auto-promote if it passes all checks
+  python scripts/validate_model.py --version 1 --auto-promote
+
+  3. Test Production Monitoring
+
+  # First, make several predictions to have data (run this 5-10 times)
+  Invoke-RestMethod -Uri "http://localhost:8000/predict" -Method Post -ContentType
+  "application/json" -Body '{"V1": -1.35, "V2": -0.07, "V3": 2.53, "V4": 1.38, "V5": -0.34,    
+   "V6": 0.46, "V7": 0.24, "V8": 0.10, "V9": 0.36, "V10": 0.09, "V11": -0.55, "V12": -0.62,    
+   "V13": -0.99, "V14": -0.31, "V15": 1.47, "V16": -0.47, "V17": 0.21, "V18": 0.03, "V19":     
+  0.40, "V20": 0.25, "V21": -0.02, "V22": 0.28, "V23": -0.11, "V24": 0.07, "V25": 0.13,        
+  "V26": -0.19, "V27": 0.13, "V28": -0.02, "Amount": 149.62}'
+
+  # Run monitoring for last 1 hour
+  python -m src.monitoring.production_monitor --hours 1
+
+  # Run monitoring for last 24 hours
+  python -m src.monitoring.production_monitor --hours 24
+
+  4. Test Complete Workflow End-to-End
+
+  # 1. Train a new model
+  $env:MLFLOW_TRACKING_URI="http://localhost:5000"
+  python -m src.ml.train
+
+  # 2. List available versions
+  python scripts/promote_model.py --list
+
+  # 3. Validate the new model (replace with actual version number)
+  python scripts/validate_model.py --version 2
+
+  # 4. Promote to production with auto-reload
+  python scripts/promote_model.py --version 2 --alias production --reload-app
+
+  # 5. Verify it's serving
+  Invoke-RestMethod -Uri "http://localhost:8000/model_info" -Method Get
+
+  # 6. Make predictions
+  Invoke-RestMethod -Uri "http://localhost:8000/predict" -Method Post -ContentType
+  "application/json" -Body '{"V1": -1.35, "V2": -0.07, "V3": 2.53, "V4": 1.38, "V5": -0.34,    
+   "V6": 0.46, "V7": 0.24, "V8": 0.10, "V9": 0.36, "V10": 0.09, "V11": -0.55, "V12": -0.62,    
+   "V13": -0.99, "V14": -0.31, "V15": 1.47, "V16": -0.47, "V17": 0.21, "V18": 0.03, "V19":     
+  0.40, "V20": 0.25, "V21": -0.02, "V22": 0.28, "V23": -0.11, "V24": 0.07, "V25": 0.13,        
+  "V26": -0.19, "V27": 0.13, "V28": -0.02, "Amount": 149.62}'
+
+  # 7. Check database logs
+  docker exec -it postgres psql -U mlops -d predictions -c "SELECT model_version, COUNT(*)     
+  FROM predictions GROUP BY model_version;"
+
+  # 8. Run monitoring
+  python -m src.monitoring.production_monitor --hours 1
+
+  5. Database Exploration
+
+  # Connect to PostgreSQL interactively
+  docker exec -it postgres psql -U mlops -d predictions
+
+  # Then run SQL queries:
+  # View all predictions
+  SELECT * FROM predictions ORDER BY timestamp DESC LIMIT 10;
+
+  # Count by model version
+  SELECT model_version, COUNT(*) as count FROM predictions GROUP BY model_version;
+
+  # Average latency
+  SELECT AVG(latency_ms) as avg_latency_ms FROM predictions;
+
+  # Fraud rate
+  SELECT AVG(prediction) as fraud_rate FROM predictions;
+
+  # Exit
+  \q
+
+  6. Check All Services Health
+
+  # Check Docker containers
+  docker ps
+
+  # Check API health
+  Invoke-RestMethod -Uri "http://localhost:8000/health" -Method Get
+
+  # Check model info
+  Invoke-RestMethod -Uri "http://localhost:8000/model_info" -Method Get
+
+  # Check Prometheus metrics
+  Invoke-WebRequest -Uri "http://localhost:8000/metrics"
+
+  # Check PostgreSQL connection
+  docker exec -it postgres pg_isready -U mlops"""
