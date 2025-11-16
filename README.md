@@ -744,30 +744,3 @@ Use `/reload` endpoint for instant model updates without container restart.
 4. Commit: `git commit -m 'Add amazing feature'`
 5. Push: `git push origin feature/amazing-feature`
 6. Submit pull request
-
----
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
----
-
-## 🙏 Acknowledgments
-
-- Credit card fraud dataset from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud)
-- Built with modern MLOps best practices
-- Inspired by production-grade ML systems
-
----
-
-## 📞 Support
-
-For issues and questions:
-- 🐛 Open an issue on GitHub
-- 📧 Contact the team
-- 📖 Check the documentation
-
----
-
-**Made with ❤️ for Production ML**
