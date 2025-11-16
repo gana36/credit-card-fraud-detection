@@ -9,8 +9,8 @@ stages:
       size: 150828752
     - path: src/ml/data.py
       hash: md5
-      md5: 8bf4b8dbbc5f588d626c2665dbe65def
-      size: 1204
+      md5: 5d4b4a5f97d257d3500af00752060b93
+      size: 1231
     outs:
     - path: data/processed/current.parquet
       hash: md5
@@ -33,12 +33,12 @@ stages:
     deps:
     - path: configs/base.yaml
       hash: md5
-      md5: 24fd43e4d800c0245e6ac519f1e1b320
-      size: 44
+      md5: 4a9088f2864dfeb097c84101c65e3b07
+      size: 47
     - path: configs/training.yaml
       hash: md5
-      md5: 0a9a53103d850928e7c4db44b1c327dd
-      size: 125
+      md5: 9ce378da9840366a14c1f5c3a53d2a98
+      size: 132
     - path: data/processed/test.parquet
       hash: md5
       md5: 2cffb1d81a3f6645ced36a887a0c4b62
@@ -49,12 +49,12 @@ stages:
       size: 60528603
     - path: src/ml/train.py
       hash: md5
-      md5: 526041b7bcfbc46d98997fd9ff36197c
-      size: 2222
+      md5: 24f2d84b66e5a4b8ab1bf555e82d3cef
+      size: 4537
     outs:
     - path: models/latest.joblib
       hash: md5
-      md5: 318ca76d7b0ccc2d4f2a158df5991dcd
+      md5: 1238cdebbffbb7b0184e09b0b5cbde3f
       size: 2878
   evaluate:
     cmd: python -m src.ml.evaluate
@@ -65,9 +65,9 @@ stages:
       size: 16333156
     - path: models/latest.joblib
       hash: md5
-      md5: 318ca76d7b0ccc2d4f2a158df5991dcd
+      md5: 1238cdebbffbb7b0184e09b0b5cbde3f
       size: 2878
     - path: src/ml/evaluate.py
       hash: md5
-      md5: f896b91e3d5c74793694bf449cf9e160
-      size: 630
+      md5: e991c8a13ab90bf9334d5935da728622
+      size: 649

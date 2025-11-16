@@ -118,6 +118,51 @@ async def model_info():
         },
         "errors": _model_info.get("errors"),
     }
+
+@app.post("/reload")
+async def reload_model():
+    """Reload the model from MLflow registry. Use this after promoting a new model version."""
+    global _model
+    global _model_info
+
+    # Clear the cached model
+    _model = None
+    _model_info = {
+        "source": None,
+        "name": None,
+        "alias": None,
+        "stage": None,
+        "version": None,
+        "errors": {
+            "alias": None,
+            "stage": None,
+        },
+    }
+
+    # Load the new model
+    try:
+        model = load_model()
+        if model is None:
+            return JSONResponse(
+                {"status": "error", "message": "Failed to load model", "model_info": _model_info},
+                status_code=503
+            )
+        return {
+            "status": "success",
+            "message": "Model reloaded successfully",
+            "model": {
+                "name": _model_info.get("name"),
+                "alias": _model_info.get("alias"),
+                "stage": _model_info.get("stage"),
+                "version": _model_info.get("version"),
+                "source": _model_info.get("source"),
+            }
+        }
+    except Exception as e:
+        return JSONResponse(
+            {"status": "error", "message": str(e), "model_info": _model_info},
+            status_code=500
+        )
 @app.post("/predict")
 async def predict(payload: dict):
     with REQUEST_LATENCY.labels("/predict").time():
