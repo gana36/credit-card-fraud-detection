@@ -12,60 +12,60 @@ A production-ready MLOps pipeline for credit card fraud detection with automated
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
-- [Training & Deployment Workflow](#-training--deployment-workflow)
-- [Production Features](#-production-features)
-- [API Endpoints](#-api-endpoints)
-- [Monitoring & Observability](#-monitoring--observability)
-- [Testing](#-testing)
-- [Project Structure](#-project-structure)
-- [Troubleshooting](#-troubleshooting)
-
----
-
-## ✨ Features
-
-### 🤖 **Model Training & Registry**
-- ✅ Scikit-learn pipeline with StandardScaler + LogisticRegression
-- ✅ MLflow experiment tracking and model registry
-- ✅ Modern alias-based promotion (`production`, `challenger`, `champion`)
-- ✅ DVC pipeline for reproducible training
-- ✅ Automated model versioning
-
-### 🚀 **Production Deployment**
-- ✅ FastAPI REST API serving predictions
-- ✅ Zero-downtime model updates via hot-reload
-- ✅ Docker Compose multi-service orchestration
-- ✅ Health checks and graceful degradation
-- ✅ Prometheus metrics export
-
-### 📊 **Monitoring & Observability**
-- ✅ PostgreSQL prediction database with full audit trail
-- ✅ Real-time data drift detection with Evidently
-- ✅ Production health monitoring dashboard
-- ✅ Prometheus + Grafana stack
-- ✅ Latency and fraud rate tracking
-
-### 🧪 **Testing & Validation**
-- ✅ Automated pytest suite (API + model tests)
-- ✅ Pre-deployment model validation
-- ✅ Performance threshold checks (AUC > 0.90)
-- ✅ CI/CD pipeline with GitHub Actions
-
-### 🔄 **MLOps Best Practices**
-- ✅ Automated promotion workflows
-- ✅ Model validation before deployment
-- ✅ Prediction logging and audit trails
-- ✅ Data drift monitoring
-- ✅ Reproducible training pipelines
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Quick Start](#quick-start)
+- [Training & Deployment Workflow](#training--deployment-workflow)
+- [Production Features](#production-features)
+- [API Endpoints](#api-endpoints)
+- [Monitoring & Observability](#monitoring--observability)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
-## 🏗️ Tech Stack
+##  Features
+
+###  **Model Training & Registry**
+-  Scikit-learn pipeline with StandardScaler + LogisticRegression
+-  MLflow experiment tracking and model registry
+-  Modern alias-based promotion (`production`, `challenger`, `champion`)
+-  DVC pipeline for reproducible training
+-  Automated model versioning
+
+###  **Production Deployment**
+-  FastAPI REST API serving predictions
+-  Zero-downtime model updates via hot-reload
+-  Docker Compose multi-service orchestration
+-  Health checks and graceful degradation
+-  Prometheus metrics export
+
+###  **Monitoring & Observability**
+-  PostgreSQL prediction database with full audit trail
+-  Real-time data drift detection with Evidently
+-  Production health monitoring dashboard
+-  Prometheus + Grafana stack
+-  Latency and fraud rate tracking
+
+###  **Testing & Validation**
+-  Automated pytest suite (API + model tests)
+-  Pre-deployment model validation
+-  Performance threshold checks (AUC > 0.90)
+-  CI/CD pipeline with GitHub Actions
+
+### **MLOps Best Practices**
+-  Automated promotion workflows
+-  Model validation before deployment
+-  Prediction logging and audit trails
+-  Data drift monitoring
+-  Reproducible training pipelines
+
+---
+
+##  Tech Stack
 
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
@@ -82,13 +82,13 @@ A production-ready MLOps pipeline for credit card fraud detection with automated
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1️⃣ Prerequisites
 
-- ✅ Docker Desktop installed and running
-- ✅ Python 3.11+ with virtual environment
-- ✅ Git
+-  Docker Desktop installed and running
+-  Python 3.11+ with virtual environment
+-  Git
 
 ### 2️⃣ Setup Virtual Environment
 
@@ -135,7 +135,7 @@ Invoke-RestMethod -Uri "http://localhost:8000/model_info"
 
 ---
 
-## 🎯 Training & Deployment Workflow
+##  Training & Deployment Workflow
 
 ### Step 1: Train a Model
 
@@ -152,7 +152,7 @@ python -m src.ml.train
 
 **Output:**
 ```
-✅ Training complete!
+ Training complete!
 Run ID: abc123...
 AUC: 0.9756
 Model Path: models/latest.joblib
@@ -257,7 +257,7 @@ Invoke-RestMethod -Uri "http://localhost:8000/predict" -Method Post -ContentType
 
 ---
 
-## 🎛️ Production Features
+##  Production Features
 
 ### 1. Prediction Database
 
@@ -325,13 +325,13 @@ python -m src.monitoring.production_monitor --hours 24
 ```
 
 **Monitoring Features:**
-- 📈 Prediction volume tracking
-- 🎯 Fraud rate trends
-- ⚡ API latency analysis
-- 🤖 Model version distribution
-- 🔬 Data drift detection (Evidently)
-- 📊 HTML drift reports
-- ⚠️ Automated alerts
+-  Prediction volume tracking
+-  Fraud rate trends
+-  API latency analysis
+-  Model version distribution
+-  Data drift detection (Evidently)
+-  HTML drift reports
+-  Automated alerts
 
 ### 3. Model Validation
 
@@ -381,7 +381,7 @@ Model credit-fraud version 5 is ready for promotion!
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Health & Info
 
@@ -425,7 +425,7 @@ Content-Type: application/json
 
 ---
 
-## 📊 Monitoring & Observability
+##  Monitoring & Observability
 
 ### Prometheus Metrics
 
@@ -485,7 +485,7 @@ python -m src.monitoring.production_monitor --hours 24
 
 ---
 
-## 🧪 Testing
+##  Testing
 
 ### Run All Tests
 
@@ -526,14 +526,14 @@ Tests run automatically via GitHub Actions on:
 - Every pull request to `main`
 
 **Pipeline Stages:**
-1. 🧪 Run pytest with coverage
-2. 🎨 Lint with black, flake8, isort
-3. 🐳 Build Docker images
-4. 📢 Notify on status
+1.  Run pytest with coverage
+2.  Lint with black, flake8, isort
+3.  Build Docker images
+4.  Notify on status
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 CreditFraudDetection/
@@ -590,7 +590,7 @@ CreditFraudDetection/
 
 ---
 
-## 🐳 Docker Commands
+##  Docker Commands
 
 ### Start/Stop Services
 
@@ -634,7 +634,7 @@ docker-compose -f infra/docker-compose.yaml down -v
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Model Not Loading
 
@@ -710,8 +710,6 @@ python -m src.ml.train
 
 ---
 
-## 📚 Key Learnings
-
 ### MLflow Modern Practices
 
 ✅ **DO**: Use aliases (`production`, `challenger`, `champion`)
@@ -736,7 +734,7 @@ Use `/reload` endpoint for instant model updates without container restart.
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create feature branch: `git checkout -b feature/amazing-feature`
