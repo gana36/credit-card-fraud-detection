@@ -1,4 +1,4 @@
-# 💳 Credit Fraud Detection - Production MLOps Pipeline
+# Credit Fraud Detection - Production MLOps Pipeline
 
 A production-ready MLOps pipeline for credit card fraud detection with automated testing, monitoring, and zero-downtime deployments.
 
@@ -27,12 +27,9 @@ A production-ready MLOps pipeline for credit card fraud detection with automated
 
 ---
 
-##  Features
-
 ###  **Model Training & Registry**
 -  Scikit-learn pipeline with StandardScaler + LogisticRegression
 -  MLflow experiment tracking and model registry
--  Modern alias-based promotion (`production`, `challenger`, `champion`)
 -  DVC pipeline for reproducible training
 -  Automated model versioning
 
@@ -40,7 +37,6 @@ A production-ready MLOps pipeline for credit card fraud detection with automated
 -  FastAPI REST API serving predictions
 -  Zero-downtime model updates via hot-reload
 -  Docker Compose multi-service orchestration
--  Health checks and graceful degradation
 -  Prometheus metrics export
 
 ###  **Monitoring & Observability**
@@ -69,28 +65,28 @@ A production-ready MLOps pipeline for credit card fraud detection with automated
 
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
-| 🐍 **ML Framework** | ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5-F7931E?style=flat&logo=scikit-learn&logoColor=white) | Model training and inference |
-| 🚀 **API** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat&logo=fastapi&logoColor=white) | High-performance REST API |
-| 📊 **Experiment Tracking** | ![MLflow](https://img.shields.io/badge/MLflow-2.16-0194E2?style=flat&logo=mlflow&logoColor=white) | Model registry and tracking |
-| 🗄️ **Database** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=flat&logo=postgresql&logoColor=white) | Prediction audit trail |
-| 📈 **Metrics** | ![Prometheus](https://img.shields.io/badge/Prometheus-Latest-E6522C?style=flat&logo=prometheus&logoColor=white) | Metrics collection |
-| 📉 **Visualization** | ![Grafana](https://img.shields.io/badge/Grafana-Latest-F46800?style=flat&logo=grafana&logoColor=white) | Dashboards and alerts |
-| 🐳 **Containerization** | ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white) | Service orchestration |
-| 🔬 **Drift Detection** | ![Evidently](https://img.shields.io/badge/Evidently-0.4-FF6B6B?style=flat) | Data quality monitoring |
-| 🧪 **Testing** | ![pytest](https://img.shields.io/badge/pytest-8.3-0A9EDC?style=flat&logo=pytest&logoColor=white) | Automated testing |
-| 📦 **Pipeline** | ![DVC](https://img.shields.io/badge/DVC-3.56-945DD6?style=flat&logo=dvc&logoColor=white) | Data versioning |
+| **ML Framework** | ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5-F7931E?style=flat&logo=scikit-learn&logoColor=white) | Model training and inference |
+| **API** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat&logo=fastapi&logoColor=white) | High-performance REST API |
+| **Experiment Tracking** | ![MLflow](https://img.shields.io/badge/MLflow-2.16-0194E2?style=flat&logo=mlflow&logoColor=white) | Model registry and tracking |
+| **Database** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=flat&logo=postgresql&logoColor=white) | Prediction audit trail |
+| **Metrics** | ![Prometheus](https://img.shields.io/badge/Prometheus-Latest-E6522C?style=flat&logo=prometheus&logoColor=white) | Metrics collection |
+| **Visualization** | ![Grafana](https://img.shields.io/badge/Grafana-Latest-F46800?style=flat&logo=grafana&logoColor=white) | Dashboards and alerts |
+| **Containerization** | ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white) | Service orchestration |
+| **Drift Detection** | ![Evidently](https://img.shields.io/badge/Evidently-0.4-FF6B6B?style=flat) | Data quality monitoring |
+| **Testing** | ![pytest](https://img.shields.io/badge/pytest-8.3-0A9EDC?style=flat&logo=pytest&logoColor=white) | Automated testing |
+| **Pipeline** | ![DVC](https://img.shields.io/badge/DVC-3.56-945DD6?style=flat&logo=dvc&logoColor=white) | Data versioning |
 
 ---
 
 ##  Quick Start
 
-### 1️⃣ Prerequisites
+### Prerequisites
 
 -  Docker Desktop installed and running
 -  Python 3.11+ with virtual environment
 -  Git
 
-### 2️⃣ Setup Virtual Environment
+### Setup Virtual Environment
 
 ```powershell
 # Create and activate virtual environment
@@ -101,7 +97,7 @@ creditfraud\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 3️⃣ Start Docker Services
+### Start Docker Services
 
 ```powershell
 # Build and start all services
@@ -111,18 +107,18 @@ docker-compose -f infra/docker-compose.yaml up --build -d
 docker ps
 ```
 
-### 4️⃣ Access Services
+### Access Services
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| 🚀 **API (FastAPI)** | http://localhost:8000 | - |
-| 📊 **MLflow UI** | http://localhost:5000 | - |
-| 📈 **Prometheus** | http://localhost:9090 | - |
-| 📉 **Grafana** | http://localhost:3000 | admin/admin |
-| 🗄️ **PostgreSQL** | localhost:5432 | mlops/mlops_password |
-| 📖 **API Docs** | http://localhost:8000/docs | - |
+| **API (FastAPI)** | http://localhost:8000 | - |
+| **MLflow UI** | http://localhost:5000 | - |
+| **Prometheus** | http://localhost:9090 | - |
+| **Grafana** | http://localhost:3000 | admin/admin |
+| **PostgreSQL** | localhost:5432 | mlops/mlops_password |
+| **API Docs** | http://localhost:8000/docs | - |
 
-### 5️⃣ Health Check
+### Health Check
 
 ```powershell
 # Check API health
@@ -173,11 +169,11 @@ python scripts/validate_model.py --version 5 --auto-promote
 ```
 
 **Validation Checks:**
-- ✅ Model loads successfully
-- ✅ AUC > 0.90 threshold
-- ✅ Predictions in valid range [0, 1]
-- ✅ No NaN predictions
-- ✅ Performance vs current production model
+- Model loads successfully
+- AUC > 0.90 threshold
+- Predictions in valid range [0, 1]
+- No NaN predictions
+- Performance vs current production model
 
 ### Step 3: List Available Versions
 
@@ -204,9 +200,9 @@ python scripts/promote_model.py --version 5 --alias production --reload-app
 ```
 
 **What happens:**
-1. ✅ Sets "production" alias to version 5 in MLflow
-2. ✅ Calls app's `/reload` endpoint
-3. ✅ App loads new model without restart (zero-downtime)
+1. Sets "production" alias to version 5 in MLflow
+2. Calls app's `/reload` endpoint
+3. App loads new model without restart (zero-downtime)
 
 ### Step 5: Verify Deployment
 
@@ -309,19 +305,19 @@ python -m src.monitoring.production_monitor --hours 24
 
 **Output:**
 ```
-🔍 Production Monitoring Report - Last 1 hours
+ Production Monitoring Report - Last 1 hours
 ============================================================
-📊 Total Predictions: 4
-🎯 Fraud Rate: 0.00%
-📈 Average Fraud Probability: 0.1663
-⚡ Average Latency: 128.03 ms
+ Total Predictions: 4
+ Fraud Rate: 0.00%
+ Average Fraud Probability: 0.1663
+ Average Latency: 128.03 ms
 
-🤖 Model Versions:
+ Model Versions:
   Version 5: 3 predictions (75.0%)
 
-🔬 Running Drift Analysis...
-✅ Drift report saved to: reports/production_drift_20251116_112309.html
-⚠️  ALERT: Data drift detected!
+ Running Drift Analysis...
+ Drift report saved to: reports/production_drift_20251116_112309.html
+ ALERT: Data drift detected!
 ```
 
 **Monitoring Features:**
@@ -342,7 +338,7 @@ python scripts/validate_model.py --version 5
 **Output:**
 ```
 ======================================================================
-🔍 MODEL VALIDATION - credit-fraud v5
+ MODEL VALIDATION - credit-fraud v5
 ======================================================================
 
 [1/5] Checking model exists...
@@ -371,7 +367,7 @@ python scripts/validate_model.py --version 5
   ✓ PASS: Performance acceptable vs production
 
 ======================================================================
-✅ VALIDATION PASSED
+VALIDATION PASSED
 ======================================================================
 
 Model credit-fraud version 5 is ready for promotion!
@@ -506,18 +502,18 @@ pytest tests/test_api.py -v
 ### Test Categories
 
 **1. API Tests** (`tests/test_api.py`)
-- ✅ Health endpoint
-- ✅ Model info endpoint
-- ✅ Prometheus metrics
-- ✅ Valid predictions
-- ✅ Invalid input handling
-- ✅ Model reload
+- Health endpoint
+- Model info endpoint
+- Prometheus metrics
+- Valid predictions
+- Invalid input handling
+- Model reload
 
 **2. Model Tests** (`tests/test_model.py`)
-- ✅ Model exists
-- ✅ Performance threshold (AUC > 0.90)
-- ✅ Prediction range validation
-- ✅ Data quality checks
+- Model exists
+- Performance threshold (AUC > 0.90)
+- Prediction range validation
+- Data quality checks
 
 ### CI/CD Pipeline
 
@@ -710,17 +706,6 @@ python -m src.ml.train
 
 ---
 
-### MLflow Modern Practices
-
-✅ **DO**: Use aliases (`production`, `challenger`, `champion`)
-❌ **DON'T**: Use deprecated stages (`Staging`, `Production`)
-
-### Model Promotion Workflow
-
-1. **Train** → Creates versioned model
-2. **Validate** → Check performance thresholds
-3. **Promote** → Set alias to version
-4. **Reload/Restart** → App serves new model
 
 ### Zero-Downtime Deployment
 
